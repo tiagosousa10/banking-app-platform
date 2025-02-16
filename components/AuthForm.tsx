@@ -69,7 +69,59 @@ const AuthForm = ({type} : {type:string}) => {
          <>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-           
+            {type === 'sign-up' && (
+               <>
+                  <CustomInput 
+                     control={form.control}
+                     name='firstName'
+                     label='First Name'
+                     placeholder='Enter your First Name'
+                   />       
+                  
+                   <CustomInput 
+                     control={form.control}
+                     name='lastName'
+                     label='Last Name'
+                     placeholder='Enter your Last Name'
+                   />
+
+                   <CustomInput 
+                     control={form.control}
+                     name='address1'
+                     label='Address'
+                     placeholder='Enter your Address'
+                   />
+
+                  <CustomInput 
+                     control={form.control}
+                     name='state'
+                     label='State'
+                     placeholder='Example: New York'
+                   />
+
+                  <CustomInput 
+                     control={form.control}
+                     name='postalCode'
+                     label='Postal Code'
+                     placeholder='Example: 11101'
+                   />   
+
+                  <CustomInput 
+                     control={form.control}
+                     name='dateOfBirth'
+                     label='Date of Birth'
+                     placeholder='YYYY-MM-DD'
+                   />    
+                   <CustomInput 
+                     control={form.control}
+                     name='ssn'
+                     label='SSN'
+                     placeholder='Example: 1234'
+                   />    
+
+                       
+             </>
+            )}
             <CustomInput 
                control={form.control}
                name='email'
