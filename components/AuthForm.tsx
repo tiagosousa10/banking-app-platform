@@ -1,27 +1,41 @@
-'use client'
+'use client';
 
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import {
   Form,
-
 } from "@/components/ui/form"
-import CustomInput from './CustomInput'
-import { authFormSchema } from '@/lib/utils'
-import { Loader2 } from 'lucide-react'
+import { Input } from "@/components/ui/input"
+import CustomInput from './CustomInput';
+import { authFormSchema } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
+
+function ClientOnlyComponent() {
+   const [clientData, setClientData] = useState("");
+ 
+   useEffect(() => {
+     setClientData("Client Rendered Data");
+   }, []);
+ 
+   return <div>{clientData}</div>;
+ }
+
 
 const AuthForm = ({type} : {type:string}) => {
    const [user, setUser] = useState(null)
    const [isLoading,setIsLoading] = useState(false)
 
+   const formSchema = authFormSchema(type)
+
    // 1. Define your form.
-  const form = useForm<z.infer<typeof authFormSchema>>({
-   resolver: zodResolver(authFormSchema),
+  const form = useForm<z.infer<typeof formSchema>>({
+   resolver: zodResolver(formSchema),
    defaultValues: {
      email: "",
      password: "",
@@ -29,7 +43,7 @@ const AuthForm = ({type} : {type:string}) => {
  })
 
  // 2. Define a submit handler.
- function onSubmit(values: z.infer<typeof authFormSchema>) {
+ function onSubmit(values: z.infer<typeof formSchema>) {
    // Do something with the form values.
    // ✅ This will be type-safe and validated.
    setIsLoading(true)
@@ -67,10 +81,13 @@ const AuthForm = ({type} : {type:string}) => {
          </div>
       ) : (
          <>
+  
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             {type === 'sign-up' && (
                <>
+                  <div className='flex gap-4'>
+
                   <CustomInput 
                      control={form.control}
                      name='firstName'
@@ -84,6 +101,8 @@ const AuthForm = ({type} : {type:string}) => {
                      label='Last Name'
                      placeholder='Enter your Last Name'
                    />
+                  </div>
+
 
                    <CustomInput 
                      control={form.control}
@@ -92,20 +111,23 @@ const AuthForm = ({type} : {type:string}) => {
                      placeholder='Enter your Address'
                    />
 
+                 <div className='flex gap-4'>
                   <CustomInput 
-                     control={form.control}
-                     name='state'
-                     label='State'
-                     placeholder='Example: New York'
-                   />
+                        control={form.control}
+                        name='state'
+                        label='State'
+                        placeholder='Example: New York'
+                     />
 
-                  <CustomInput 
-                     control={form.control}
-                     name='postalCode'
-                     label='Postal Code'
-                     placeholder='Example: 11101'
-                   />   
-
+                     <CustomInput 
+                        control={form.control}
+                        name='postalCode'
+                        label='Postal Code'
+                        placeholder='Example: 11101'
+                     />   
+                 </div>
+                 
+                 <div className='flex gap-4'>
                   <CustomInput 
                      control={form.control}
                      name='dateOfBirth'
@@ -118,8 +140,7 @@ const AuthForm = ({type} : {type:string}) => {
                      label='SSN'
                      placeholder='Example: 1234'
                    />    
-
-                       
+                  </div>           
              </>
             )}
             <CustomInput 

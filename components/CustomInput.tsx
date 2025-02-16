@@ -7,13 +7,18 @@ import {Control, FieldPath} from 'react-hook-form'
 import { z } from 'zod'
 import { authFormSchema } from '@/lib/utils'
 
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const formSchema = authFormSchema('sign-up')
+
 interface CustomInput {
-   control: Control<z.infer<typeof authFormSchema>>,
-   // extract the field name from the schema created by zod with type of authFormSchema
-   name: FieldPath<z.infer<typeof authFormSchema>>, 
+   control: Control<z.infer<typeof formSchema>>,
+   // extract the field name from the schema created by zod with type of formSchema
+   name: FieldPath<z.infer<typeof formSchema>>, 
    label: string,
    placeholder: string
 }
+
 
 const CustomInput = ({ control, name, label, placeholder }: CustomInput) => {
    return (
