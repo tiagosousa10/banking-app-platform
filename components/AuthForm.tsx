@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -11,12 +11,11 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import CustomInput from './CustomInput';
 import { authFormSchema } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { getLoggedInUser, signIn, signUp } from '@/lib/actions/user.actions';
+import {  signIn, signUp } from '@/lib/actions/user.actions';
 import PlaidLink from './PlaidLink';
 
 
@@ -58,9 +57,14 @@ const AuthForm = ({type} : {type:string}) => {
             ssn: data.ssn!,
             email: data.email,
             password: data.password
-         }
-         const newUser = await signUp(userData)
+          }
+          const newUser = await signUp(userData);
+          console.log("🚀 ~ onSubmit ~ newUser:", newUser)
+          
 
+          if(!newUser) {
+            console.log('Error creating user')
+          }
          setUser(newUser)
       } 
 
@@ -106,11 +110,11 @@ const AuthForm = ({type} : {type:string}) => {
             </h1>
          </div>
       </header>
-      {/* {user ? ( */}
+      {user ? ( 
          <div className='flex flex-col gap-4'>
-            <PlaidLink user={user} variant="primary" />
+         <PlaidLink user={user} variant="primary" />
          </div>
-      {/* ) : ( */}
+       ) : ( 
          <>
   
           <Form {...form}>
@@ -216,7 +220,7 @@ const AuthForm = ({type} : {type:string}) => {
                </Link>
          </footer>
          </>
-      {/* )} */}
+      )} 
     </section>
   )
 }

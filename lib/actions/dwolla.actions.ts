@@ -1,10 +1,7 @@
 "use server";
-
 import { Client } from "dwolla-v2";
-
 const getEnvironment = (): "production" | "sandbox" => {
   const environment = process.env.DWOLLA_ENV as string;
-
   switch (environment) {
     case "sandbox":
       return "sandbox";
@@ -16,13 +13,11 @@ const getEnvironment = (): "production" | "sandbox" => {
       );
   }
 };
-
 const dwollaClient = new Client({
   environment: getEnvironment(),
   key: process.env.DWOLLA_KEY as string,
   secret: process.env.DWOLLA_SECRET as string,
 });
-
 // Create a Dwolla Funding Source using a Plaid Processor Token
 export const createFundingSource = async (
   options: CreateFundingSourceOptions
@@ -38,7 +33,6 @@ export const createFundingSource = async (
     console.error("Creating a Funding Source Failed: ", err);
   }
 };
-
 export const createOnDemandAuthorization = async () => {
   try {
     const onDemandAuthorization = await dwollaClient.post(
@@ -50,16 +44,15 @@ export const createOnDemandAuthorization = async () => {
     console.error("Creating an On Demand Authorization Failed: ", err);
   }
 };
-
 export const createDwollaCustomer = async (
   newCustomer: NewDwollaCustomerParams
 ) => {
   try {
-    return await dwollaClient
-      .post("customers", newCustomer)
-      .then((res) => res.headers.get("location"));
+    const response = await dwollaClient.post("customers", newCustomer);
+    return response.headers.get("location");
   } catch (err) {
     console.error("Creating a Dwolla Customer Failed: ", err);
+    return null; // Ensure it returns a valid value
   }
 };
 
@@ -90,7 +83,6 @@ export const createTransfer = async ({
     console.error("Transfer fund failed: ", err);
   }
 };
-
 export const addFundingSource = async ({
   dwollaCustomerId,
   processorToken,
@@ -99,7 +91,6 @@ export const addFundingSource = async ({
   try {
     // create dwolla auth link
     const dwollaAuthLinks = await createOnDemandAuthorization();
-
     // add funding source to the dwolla customer & get the funding source url
     const fundingSourceOptions = {
       customerId: dwollaCustomerId,
