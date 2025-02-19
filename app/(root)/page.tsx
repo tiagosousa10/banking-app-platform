@@ -19,7 +19,7 @@ const Home = async ({searchParams: {id,page}} : SearchParamProps) => {
 
   const account = await getAccount({ appwriteItemId })
 
-  console.log({
+  console.log({'teste':
     accountsData,
     account
   })
@@ -42,7 +42,7 @@ const Home = async ({searchParams: {id,page}} : SearchParamProps) => {
           />
         </header>
 
-        <RecentTransactions 
+        <RecentTransactions
           accounts={accountsData}
           transactions={account?.transactions}
           appwriteItemId={appwriteItemId}
