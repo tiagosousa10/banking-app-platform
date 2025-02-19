@@ -27,6 +27,23 @@ const {
   APPWRITE_BANK_COLLECTION_ID: BANK_COLLECTION_ID,
 } = process.env;
 
+
+export const getUserInfo = async ({userId} : getUserInfoProps) => {
+  try {
+    const {database} = await createAdminClient();
+
+    const user = await database.listDocuments( // get all banks from bank collection
+      DATABASE_ID!,
+      USER_COLLECTION_ID!,
+      [Query.equal('userId', [userId])]
+    )
+
+    return parseStringify(user.documents[0]);
+  } catch(error) {
+    console.log('error:', error)
+}
+}
+
 export const signUp = async ({ password, ...userData }: SignUpParams) => {
   let newUserAccount;
 
@@ -92,6 +109,7 @@ export const signUp = async ({ password, ...userData }: SignUpParams) => {
 export const signIn = async ({ email, password }: signInProps) => {
   try {
     const { account } = await createAdminClient();
+
     const session = await account.createEmailPasswordSession(email, password);
 
     const cookiesStore = await cookies();
@@ -102,7 +120,7 @@ export const signIn = async ({ email, password }: signInProps) => {
       secure: true,
     });
 
-    const user = await getUserInfo({ userId: session.userId });
+    const user = await getUserInfo({ userId: session.userId });// get user
 
     return parseStringify(user);
   } catch (error) {
@@ -115,20 +133,8 @@ export const getLoggedInUser = async () => {
   try {
     const { account } = await createSessionClient();
 
-    // ✅ Check if a session exists
-    const session = await account.getSession("current").catch(() => null);
-
-    if (!session) {
-      console.error("❌ No active session found.");
-      return null; // Return null instead of making an unauthorized request
-    }
-
-    // ✅ Now, it's safe to fetch the user account
-    const result = await account.get();
-    console.log("✅ Logged-in user:", result);
-
-    // ✅ Fetch user info using the Appwrite ID
-    const user = await getUserInfo({ userId: result.$id });
+   const result = await account.get() // get logged in user
+   const user = await getUserInfo({userId: result.$id})
 
     return parseStringify(user);
   } catch (error) {
@@ -228,24 +234,6 @@ export const exchangePublicToken = async ({
   }
 };
 
-export const getUserInfo = async ({ userId }: getUserInfoProps) => {
-  try {
-    const { database } = await createAdminClient();
-
-    const user = await database.listDocuments(
-      DATABASE_ID!,
-      USER_COLLECTION_ID!,
-      [Query.equal("userId", [userId])]
-    );
-
-    if (user.total !== 1) return null;
-
-    return parseStringify(user.documents[0]);
-  } catch (error) {
-    console.error("Error", error);
-    return null;
-  }
-};
 
 export const createBankAccount = async ({
   accessToken,
@@ -280,40 +268,36 @@ export const createBankAccount = async ({
 };
 
 // get user bank accounts
-export const getBanks = async ({ userId }: getBanksProps) => {
+export const getBanks = async ({userId} : getBanksProps) => {
   try {
-    const { database } = await createAdminClient();
+    const {database} = await createAdminClient();
 
-    const banks = await database.listDocuments(
+    const banks = await database.listDocuments( // get all banks from bank collection
       DATABASE_ID!,
       BANK_COLLECTION_ID!,
       [Query.equal("userId", [userId])]
-    );
+    )
 
     return parseStringify(banks.documents);
-  } catch (error) {
-    console.error("Error", error);
-    return null;
+  } catch(error) {
+    console.log('error: ', error);
   }
-};
+}
 
 // get specific bank from bank collection by document id
-export const getBank = async ({ documentId }: getBankProps) => {
+export const getBank = async ({documentId} : getBankProps) => {
   try {
-    const { database } = await createAdminClient();
+    const {database} = await createAdminClient();
 
-    const bank = await database.listDocuments(
+    const bank = await database.listDocuments( // get all banks from bank collection
       DATABASE_ID!,
       BANK_COLLECTION_ID!,
-      [Query.equal("$id", [documentId])]
-    );
+      [Query.equal('$id', [documentId])]
+    )
 
-    if (bank.total !== 1) return null;
-
-    return parseStringify(bank.documents[0]);
-  } catch (error) {
-    console.error("Error", error);
-    return null;
+    return parseStringify(bank.documents);
+  } catch(error) {
+    console.log('error: ', error);
   }
 };
 
