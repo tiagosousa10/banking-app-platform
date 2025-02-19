@@ -39,6 +39,7 @@ export const getUserInfo = async ({userId} : getUserInfoProps) => {
     )
 
     return parseStringify(user.documents[0]);
+
   } catch(error) {
     console.log('error:', error)
 }
@@ -134,6 +135,7 @@ export const getLoggedInUser = async () => {
     const { account } = await createSessionClient();
 
    const result = await account.get() // get logged in user
+   
    const user = await getUserInfo({userId: result.$id})
 
     return parseStringify(user);
@@ -289,7 +291,7 @@ export const getBank = async ({documentId} : getBankProps) => {
   try {
     const {database} = await createAdminClient();
 
-    const bank = await database.listDocuments( // get all banks from bank collection
+    const bank = await database.listDocuments( 
       DATABASE_ID!,
       BANK_COLLECTION_ID!,
       [Query.equal('$id', [documentId])]

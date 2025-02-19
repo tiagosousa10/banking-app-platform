@@ -6,14 +6,20 @@ import { getLoggedInUser } from '@/lib/actions/user.actions';
 
 const Home = async ({searchParams: {id,page}} : SearchParamProps) => {
   const loggedIn = await getLoggedInUser(); // get logged in user
-  const accounts = await getAccounts({userId: loggedIn.$id})   // get accounts
 
+  const accounts = await getAccounts({ 
+    userId: loggedIn.$id 
+  })
   if(!accounts) return;
+  
+  const accountsData = accounts?.data;
+  const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId;
+  const account = await getAccount({ appwriteItemId })
 
-  const accountsData= accounts?.data;
-  const appwriteItemId = (id as string)  || accountsData[0]?.appwriteItemId;
-  // get account
-  const account = await getAccount({appwriteItemId});
+  console.log({
+    accountsData,
+    account
+  })
 
   return (
     <section className="home">
@@ -39,7 +45,7 @@ const Home = async ({searchParams: {id,page}} : SearchParamProps) => {
       <RightSidebar 
         user={loggedIn}
         transactions={accounts?.transactions}
-        banks={accountsData?.slice(0,2)}
+        banks={accountsData?.slice(0, 2)}
       />
     </section>
   )
