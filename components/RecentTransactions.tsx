@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import {Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
+import { BankTabItem } from './BankTabItem'
 
 const RecentTransactions = ({
    accounts,
@@ -20,10 +21,25 @@ const RecentTransactions = ({
       <Tabs defaultValue={appwriteItemId} className="w-full">
          <TabsList className='recent-transactions-tablist'>
             {accounts.map((account: Account) => (
-               <TabsTrigger  key={account.id} value={account.appwriteItemId} />
+               <TabsTrigger  key={account.id} value={account.appwriteItemId} >
+                  <BankTabItem 
+                     key={account.id}
+                     account={account}
+                     appwriteItemId={appwriteItemId}
+                  />
+               </TabsTrigger>
             ))}
          </TabsList>
          
+         {accounts.map((account: Account) => (
+            <TabsContent 
+               value={account.appwriteItemId}
+               key={account.id}
+               className='space-y-4'
+            >
+
+            </TabsContent>
+         ))}
       </Tabs>
 
     </section>
