@@ -1,4 +1,5 @@
 import { Configuration, PlaidApi, PlaidEnvironments } from 'plaid';
+
 const configuration = new Configuration({
   basePath: PlaidEnvironments.sandbox,
   baseOptions: {
@@ -8,4 +9,5 @@ const configuration = new Configuration({
     }
   }
 })
+
 export const plaidClient = new PlaidApi(configuration);

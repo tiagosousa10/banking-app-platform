@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/select";
 import { formUrlQuery, formatAmount } from "@/lib/utils";
 
-
 export const BankDropdown = ({
   accounts = [],
   setValue,
@@ -23,7 +22,6 @@ export const BankDropdown = ({
   const searchParams = useSearchParams();
   const router = useRouter();
   const [selected, setSeclected] = useState(accounts[0]);
-
 
   const handleBankChange = (id: string) => {
     const account = accounts.find((account) => account.appwriteItemId === id)!;
@@ -58,7 +56,7 @@ export const BankDropdown = ({
         <p className="line-clamp-1 w-full text-left">{selected.name}</p>
       </SelectTrigger>
       <SelectContent
-        className={`w-full md:w-[300px] bg-white ${otherStyles}`}
+        className={`w-full bg-white md:w-[300px] ${otherStyles}`}
         align="end"
       >
         <SelectGroup>
