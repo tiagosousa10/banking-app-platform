@@ -15,9 +15,34 @@ const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
   if(!accounts) return;
   
   const accountsData = accounts?.data;
-  const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId;
+
+  if(!accountsData || accountsData.length === 0) {
+    return (
+      <section className="home">
+        <div className="home-content">
+          <header className="home-header">
+            <HeaderBox 
+              type="greeting"
+              title="Welcome"
+              user={loggedIn?.firstName || 'Guest'}
+              subtext="Connect a bank account to see balances and activity."
+            />
+          </header>
+        </div>
+      </section>
+    )
+  }
+
+  const requestedAccount = accountsData.find(
+    (account) => account.appwriteItemId === id
+  );
+  const fallbackAccount = accountsData[0];
+  const appwriteItemId = (requestedAccount || fallbackAccount)?.appwriteItemId;
+
+  if(!appwriteItemId) return;
 
   const account = await getAccount({ appwriteItemId })
+  const transactions = account?.transactions ?? [];
 
   return (
     <section className="home">
@@ -39,7 +64,7 @@ const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
 
         <RecentTransactions 
           accounts={accountsData}
-          transactions={account?.transactions}
+          transactions={transactions}
           appwriteItemId={appwriteItemId}
           page={currentPage}
         />
@@ -47,7 +72,7 @@ const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
 
       <RightSidebar 
         user={loggedIn}
-        transactions={account?.transactions}
+        transactions={transactions}
         banks={accountsData?.slice(0, 2)}
       />
     </section>

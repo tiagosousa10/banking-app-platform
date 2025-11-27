@@ -59,6 +59,10 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
       });
       const senderBank = await getBank({ documentId: data.senderBank });
 
+      if (!receiverBank || !senderBank) {
+        throw new Error("Unable to locate the selected bank accounts.");
+      }
+
       const transferParams = {
         sourceFundingSourceUrl: senderBank.fundingSourceUrl,
         destinationFundingSourceUrl: receiverBank.fundingSourceUrl,

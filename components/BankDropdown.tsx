@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Select,
@@ -21,10 +21,46 @@ export const BankDropdown = ({
 }: BankDropdownProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [selected, setSeclected] = useState(accounts[0]);
+  const [selected, setSeclected] = useState<Account | undefined>(accounts[0]);
+
+  useEffect(() => {
+    if (!accounts.length || selected) return;
+
+    const firstAccount = accounts[0];
+    setSeclected(firstAccount);
+
+    if (setValue) {
+      setValue("senderBank", firstAccount.appwriteItemId);
+    }
+  }, [accounts, selected, setValue]);
+
+  if (!accounts.length) {
+    return (
+      <div className={`flex w-full items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 text-14 text-gray-500 ${otherStyles}`}>
+        <div className="flex items-center gap-3">
+          <Image
+            src="icons/credit-card.svg"
+            width={20}
+            height={20}
+            alt="account"
+          />
+          <p>No bank accounts yet</p>
+        </div>
+        <button
+          type="button"
+          className="text-blue-600"
+          onClick={() => router.push("/")}
+        >
+          Add one
+        </button>
+      </div>
+    );
+  }
 
   const handleBankChange = (id: string) => {
-    const account = accounts.find((account) => account.appwriteItemId === id)!;
+    const account = accounts.find((account) => account.appwriteItemId === id);
+
+    if (!account) return;
 
     setSeclected(account);
     const newUrl = formUrlQuery({
@@ -41,7 +77,7 @@ export const BankDropdown = ({
 
   return (
     <Select
-      defaultValue={selected.id}
+      defaultValue={selected?.id}
       onValueChange={(value) => handleBankChange(value)}
     >
       <SelectTrigger
@@ -53,7 +89,9 @@ export const BankDropdown = ({
           height={20}
           alt="account"
         />
-        <p className="line-clamp-1 w-full text-left">{selected.name}</p>
+        <p className="line-clamp-1 w-full text-left">
+          {selected?.name ?? "Select a bank"}
+        </p>
       </SelectTrigger>
       <SelectContent
         className={`w-full bg-white md:w-[300px] ${otherStyles}`}

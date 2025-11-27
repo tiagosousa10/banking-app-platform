@@ -270,6 +270,8 @@ export const getBank = async ({ documentId }: getBankProps) => {
       [Query.equal('$id', [documentId])]
     )
 
+    if (!bank.documents.length) return null;
+
     return parseStringify(bank.documents[0]);
   } catch (error) {
     console.log(error)

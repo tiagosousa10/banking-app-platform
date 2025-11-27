@@ -16,20 +16,40 @@ const TransactionHistory = async ({ searchParams: { id, page }}:SearchParamProps
   if(!accounts) return;
   
   const accountsData = accounts?.data;
-  const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId;
+
+  if(!accountsData || accountsData.length === 0) {
+    return (
+      <div className="transactions">
+        <div className="transactions-header">
+          <HeaderBox 
+            title="Transaction History"
+            subtext="Connect a bank account to see balances and activity."
+          />
+        </div>
+      </div>
+    )
+  }
+
+  const requestedAccount = accountsData.find(
+    (account) => account.appwriteItemId === id
+  );
+  const fallbackAccount = accountsData[0];
+  const appwriteItemId = (requestedAccount || fallbackAccount)?.appwriteItemId;
+
+  if(!appwriteItemId) return;
 
   const account = await getAccount({ appwriteItemId })
 
+  const allTransactions = account?.transactions ?? [];
+  const rowsPerPage = 10;
+  const totalPages = Math.ceil(allTransactions.length / rowsPerPage);
 
-const rowsPerPage = 10;
-const totalPages = Math.ceil(account?.transactions.length / rowsPerPage);
+  const indexOfLastTransaction = currentPage * rowsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage;
 
-const indexOfLastTransaction = currentPage * rowsPerPage;
-const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage;
-
-const currentTransactions = account?.transactions.slice(
-  indexOfFirstTransaction, indexOfLastTransaction
-)
+  const currentTransactions = allTransactions.slice(
+    indexOfFirstTransaction, indexOfLastTransaction
+  )
   return (
     <div className="transactions">
       <div className="transactions-header">

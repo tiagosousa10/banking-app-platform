@@ -69,6 +69,11 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
     // get bank from db
     const bank = await getBank({ documentId: appwriteItemId });
 
+    if (!bank) {
+      console.warn(`Bank ${appwriteItemId} not found`);
+      return null;
+    }
+
     // get account info from plaid
     const accountsResponse = await plaidClient.accountsGet({
       access_token: bank.accessToken,
@@ -98,7 +103,7 @@ export const getAccount = async ({ appwriteItemId }: getAccountProps) => {
     });
 
     const transactions = await getTransactions({
-      accessToken: bank?.accessToken,
+      accessToken: bank.accessToken,
     });
 
     const account = {

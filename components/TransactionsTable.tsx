@@ -26,7 +26,15 @@ const CategoryBadge = ({ category }: CategoryBadgeProps) => {
   )
 } 
 
-const TransactionsTable = ({ transactions }: TransactionTableProps) => {
+const TransactionsTable = ({ transactions = [] }: TransactionTableProps) => {
+  if (!transactions.length) {
+    return (
+      <div className="w-full rounded-xl border border-gray-200 bg-white p-6 text-center text-14 text-gray-500">
+        No transactions to display yet.
+      </div>
+    )
+  }
+
   return (
     <Table>
       <TableHeader className="bg-[#f9fafb]">
