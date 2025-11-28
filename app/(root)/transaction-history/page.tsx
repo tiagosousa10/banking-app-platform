@@ -41,15 +41,15 @@ const TransactionHistory = async ({ searchParams: { id, page }}:SearchParamProps
   const account = await getAccount({ appwriteItemId })
 
   const allTransactions = account?.transactions ?? [];
-  const rowsPerPage = 10;
+const rowsPerPage = 10;
   const totalPages = Math.ceil(allTransactions.length / rowsPerPage);
 
-  const indexOfLastTransaction = currentPage * rowsPerPage;
-  const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage;
+const indexOfLastTransaction = currentPage * rowsPerPage;
+const indexOfFirstTransaction = indexOfLastTransaction - rowsPerPage;
 
   const currentTransactions = allTransactions.slice(
-    indexOfFirstTransaction, indexOfLastTransaction
-  )
+  indexOfFirstTransaction, indexOfLastTransaction
+)
   return (
     <div className="transactions">
       <div className="transactions-header">
